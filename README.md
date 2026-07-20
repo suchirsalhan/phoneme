@@ -1,9 +1,16 @@
 # phoneme-entropy
 
+[![PyPI](https://img.shields.io/pypi/v/phoneme-entropy.svg)](https://pypi.org/project/phoneme-entropy/)
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/suchirsalhan/phoneme/blob/main/examples/colab_quickstart.ipynb)
+
 Phoneme-level entropy, informativity, and maximum-entropy tools. A standalone
 library that bundles the entropy estimators from
 [`entropy-estimators`](https://github.com/fermosc24/entropy-estimators) (MIT,
 © 2025 fermosc24) and adds phonology-oriented analysis utilities.
+
+**Try it now:** run the
+[Colab quickstart](https://colab.research.google.com/github/suchirsalhan/phoneme/blob/main/examples/colab_quickstart.ipynb)
+— no install or data download needed.
 
 ## Install
 
@@ -41,9 +48,13 @@ for w in sample["Word"]:
 alpha, se = estimate_alpha_entropy(list(phon.values()), n_boot=0)
 ```
 
-See [`examples/quickstart.py`](examples/quickstart.py) and
-[`examples/usage_example.ipynb`](examples/usage_example.ipynb) for a full
-walkthrough.
+### Notebooks & examples
+
+| | Description |
+| --- | --- |
+| [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/suchirsalhan/phoneme/blob/main/examples/colab_quickstart.ipynb) [`colab_quickstart.ipynb`](examples/colab_quickstart.ipynb) | Self-contained Colab notebook: `pip install`s from PyPI and runs the full pipeline on the bundled sample. |
+| [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/suchirsalhan/phoneme/blob/main/examples/usage_example.ipynb) [`usage_example.ipynb`](examples/usage_example.ipynb) | The same tutorial as a local/Colab notebook. |
+| [`quickstart.py`](examples/quickstart.py) | Script version of the walkthrough. |
 
 ### Data
 
