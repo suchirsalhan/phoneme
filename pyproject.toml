@@ -61,14 +61,17 @@ Repository = "https://github.com/suchirsalhan/phoneme"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/phoneme_entropy"]
-
-[tool.hatch.build.targets.wheel.force-include]
-# Ship the bundled CELEX sample CSV inside the wheel.
-"src/phoneme_entropy/data/celex_en_sample.csv" = "phoneme_entropy/data/celex_en_sample.csv"
+# The bundled CELEX sample under phoneme_entropy/_data/ is a tracked, non-Python
+# data file inside the package; hatchling includes it automatically. (It lives in
+# _data/, not data/, to avoid colliding with the data.py module.)
+artifacts = ["src/phoneme_entropy/_data/*.csv"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 addopts = "-ra"
+# src-layout: make the package importable during tests independent of how (or
+# whether) it was installed. Avoids editable-install/pytest path quirks.
+pythonpath = ["src"]
 
 [tool.ruff]
 line-length = 100

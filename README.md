@@ -45,6 +45,19 @@ See [`examples/quickstart.py`](examples/quickstart.py) and
 [`examples/usage_example.ipynb`](examples/usage_example.ipynb) for a full
 walkthrough.
 
+### Data
+
+A small CELEX-derived sample ships with the package (`load_sample()`). The full
+sample is mirrored as a **gated, permissions-only** Hugging Face dataset
+[`suchirsalhan/celex-en-phoneme-sample`](https://huggingface.co/datasets/suchirsalhan/celex-en-phoneme-sample)
+— access is granted to holders of a valid CELEX/LDC license
+([LDC96L14](https://catalog.ldc.upenn.edu/docs/LDC96L14/celex.readme.html)):
+
+```python
+from phoneme_entropy.data import load_hf_dataset
+ds = load_hf_dataset(split="train")   # after your access request is approved
+```
+
 ## API
 
 | Import | Purpose |

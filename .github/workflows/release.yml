@@ -1,0 +1,63 @@
+name: Release to TestPyPI
+
+# Publishes the built distribution to TestPyPI.
+#
+# Triggers:
+#   * pushing a tag like v0.1.0
+#   * manual run from the Actions tab (workflow_dispatch)
+#
+# Auth uses PyPI Trusted Publishing (OIDC) — no API token is stored. One-time
+# setup on TestPyPI (https://test.pypi.org/manage/account/publishing/): add a
+# "pending publisher" for
+#   owner:   suchirsalhan
+#   repo:    phoneme
+#   workflow: release.yml
+#   environment: testpypi
+# After the first successful run, TestPyPI links the publisher automatically.
+#
+# Prefer an API token instead? Delete the `permissions`/`environment` blocks,
+# add a `TEST_PYPI_API_TOKEN` repo secret, and set `password:` on the publish
+# step (see the commented lines below).
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Build sdist + wheel
+        run: |
+          python -m pip install --upgrade pip build twine
+          python -m build
+          twine check dist/*
+      - name: Upload dist artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist/
+
+  publish-testpypi:
+    needs: build
+    runs-on: ubuntu-latest
+    environment: testpypi
+    permissions:
+      id-token: write        # required for Trusted Publishing (OIDC)
+    steps:
+      - name: Download dist artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist/
+      - name: Publish to TestPyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          repository-url: https://test.pypi.org/legacy/
+          # For token auth instead of OIDC, uncomment:
+          # password: ${{ secrets.TEST_PYPI_API_TOKEN }}

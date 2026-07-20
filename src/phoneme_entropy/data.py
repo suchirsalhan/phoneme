@@ -1,4 +1,4 @@
-"""Dataset loaders for the bundled sample and the private Hugging Face dataset.
+"""Dataset loaders for the bundled sample and the gated Hugging Face dataset.
 
 Two data sources are supported:
 
@@ -6,11 +6,11 @@ Two data sources are supported:
    for quick smoke tests, examples, and the tutorial notebook. Load it with
    :func:`load_sample`.
 
-2. **Private Hugging Face dataset** — the full dataset used in the paper lives in
-   a private HF repo (id set via :data:`HF_DATASET_ID` or the
+2. **Gated Hugging Face dataset** — the full CELEX-derived sample lives in a
+   gated (permissions-only) HF dataset (id set via :data:`HF_DATASET_ID` or the
    ``PHONEME_ENTROPY_HF_DATASET`` environment variable). Load it with
    :func:`load_hf_dataset`, which requires the optional ``datasets`` dependency
-   and a valid HF token for private access.
+   and an approved HF access request (CELEX/LDC96L14 license holders only).
 
 The CSV is expected to contain at least a ``Word`` column (space-separated
 phonemes) and a ``Frequency`` column, matching the API of
@@ -26,13 +26,11 @@ import pandas as pd
 
 __all__ = ["load_sample", "load_hf_dataset", "HF_DATASET_ID", "sample_path"]
 
-# ---------------------------------------------------------------------------
-# TODO(dataset): replace with the real private HF dataset id once it is shared,
-# e.g. "suchirsalhan/phoneme-entropy". It can also be overridden at runtime via
-# the PHONEME_ENTROPY_HF_DATASET environment variable (see load_hf_dataset).
-# ---------------------------------------------------------------------------
+# Gated (permissions-only) Hugging Face dataset holding the full CELEX-derived
+# sample. Access is granted manually to users who hold a valid CELEX/LDC license
+# (LDC96L14). Override at runtime via the PHONEME_ENTROPY_HF_DATASET env var.
 HF_DATASET_ID = os.environ.get(
-    "PHONEME_ENTROPY_HF_DATASET", "REPLACE_ME/phoneme-entropy"
+    "PHONEME_ENTROPY_HF_DATASET", "suchirsalhan/celex-en-phoneme-sample"
 )
 
 _SAMPLE_FILENAME = "celex_en_sample.csv"
@@ -44,7 +42,7 @@ def sample_path() -> str:
     Uses :mod:`importlib.resources` so it works whether the package is installed
     as a wheel, in editable mode, or run from a source checkout.
     """
-    return str(resources.files("phoneme_entropy").joinpath("data", _SAMPLE_FILENAME))
+    return str(resources.files("phoneme_entropy").joinpath("_data", _SAMPLE_FILENAME))
 
 
 def load_sample(sep: str = ",") -> pd.DataFrame:
@@ -63,7 +61,7 @@ def load_sample(sep: str = ",") -> pd.DataFrame:
         ``pd.read_csv(...).iloc[:, 1:]``.
     """
     with resources.as_file(
-        resources.files("phoneme_entropy").joinpath("data", _SAMPLE_FILENAME)
+        resources.files("phoneme_entropy").joinpath("_data", _SAMPLE_FILENAME)
     ) as path:
         df = pd.read_csv(path, sep=sep)
     # The raw CSV carries a leading unnamed index column; drop it for parity with
@@ -79,11 +77,12 @@ def load_hf_dataset(
     token: str | bool | None = None,
     **kwargs,
 ):
-    """Load the private Hugging Face dataset used in the paper.
+    """Load the gated Hugging Face dataset (full CELEX-derived sample).
 
     Requires the optional ``datasets`` dependency (``pip install
-    "phoneme-entropy[data]"``) and, for a private repo, a Hugging Face access
-    token — pass ``token=...`` or run ``huggingface-cli login`` beforehand.
+    "phoneme-entropy[data]"``) and, for this gated repo, an approved access
+    request plus a Hugging Face token — pass ``token=...`` or run
+    ``huggingface-cli login`` beforehand.
 
     Parameters
     ----------
