@@ -1,27 +1,29 @@
-name: Release to TestPyPI
+name: Release
 
-# Publishes the built distribution to TestPyPI.
+# Two-stage publishing, both via PyPI Trusted Publishing (OIDC — no stored tokens):
 #
-# Triggers:
-#   * pushing a tag like v0.1.0
-#   * manual run from the Actions tab (workflow_dispatch)
+#   * push a tag  v*             -> build + publish to TestPyPI   (release candidate)
+#   * publish a GitHub Release   -> build + publish to PyPI       (promote to real PyPI)
+#   * manual dispatch            -> build + publish to TestPyPI
 #
-# Auth uses PyPI Trusted Publishing (OIDC) — no API token is stored. One-time
-# setup on TestPyPI (https://test.pypi.org/manage/account/publishing/): add a
-# "pending publisher" for
-#   owner:   suchirsalhan
-#   repo:    phoneme
-#   workflow: release.yml
-#   environment: testpypi
-# After the first successful run, TestPyPI links the publisher automatically.
+# Typical flow:
+#   git tag v0.1.0 && git push origin v0.1.0     # -> lands on TestPyPI, smoke-test it
+#   # then, on GitHub, cut a Release for tag v0.1.0  -> lands on PyPI
 #
-# Prefer an API token instead? Delete the `permissions`/`environment` blocks,
-# add a `TEST_PYPI_API_TOKEN` repo secret, and set `password:` on the publish
-# step (see the commented lines below).
+# One-time setup (per index) at https://<index>/manage/account/publishing/ :
+#   add a pending publisher -> owner: suchirsalhan, repo: phoneme,
+#   workflow: release.yml, environment: testpypi (on TestPyPI) / pypi (on PyPI).
+# Also create matching GitHub environments (repo Settings -> Environments):
+#   `testpypi` and `pypi`.
+#
+# Prefer API tokens? Remove the environment/permissions blocks, add repo secrets
+# TEST_PYPI_API_TOKEN / PYPI_API_TOKEN, and set `password:` on the publish steps.
 
 on:
   push:
     tags: ["v*"]
+  release:
+    types: [published]
   workflow_dispatch:
 
 jobs:
@@ -44,7 +46,9 @@ jobs:
           path: dist/
 
   publish-testpypi:
+    # Release candidates: tag pushes and manual runs go to TestPyPI.
     needs: build
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     environment: testpypi
     permissions:
@@ -59,5 +63,24 @@ jobs:
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           repository-url: https://test.pypi.org/legacy/
-          # For token auth instead of OIDC, uncomment:
-          # password: ${{ secrets.TEST_PYPI_API_TOKEN }}
+          # password: ${{ secrets.TEST_PYPI_API_TOKEN }}   # token auth alternative
+
+  publish-pypi:
+    # Promotion: publishing a GitHub Release ships to real PyPI.
+    needs: build
+    if: github.event_name == 'release'
+    runs-on: ubuntu-latest
+    environment: pypi
+    permissions:
+      id-token: write        # required for Trusted Publishing (OIDC)
+    steps:
+      - name: Download dist artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist/
+      - name: Publish to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        # repository-url defaults to https://upload.pypi.org/legacy/ (real PyPI)
+        # with:
+        #   password: ${{ secrets.PYPI_API_TOKEN }}         # token auth alternative
