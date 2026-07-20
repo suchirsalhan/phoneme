@@ -8,7 +8,6 @@ import pandas as pd
 import pytest
 
 from phoneme_entropy.segmentation import phoneme_prefix_entropy, segment_informativity
-from conftest import requires_entropy_estimators
 
 
 def test_segment_informativity_columns_and_inventory(toy_words):
@@ -55,7 +54,6 @@ def test_segment_informativity_word_final_surprisal_is_log_v():
     assert math.isclose(row_a["Surprisal"], math.log(V, 2), rel_tol=1e-9)
 
 
-@requires_entropy_estimators
 def test_phoneme_prefix_entropy_columns(toy_words):
     words, freqs = toy_words
     df = phoneme_prefix_entropy(words, freqs, smoothing="ML")

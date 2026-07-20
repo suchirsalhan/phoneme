@@ -14,7 +14,6 @@ from phoneme_entropy.dirichlet import (
     numerical_beta_order_stat_moments,
     estimate_alpha_entropy,
 )
-from conftest import requires_entropy_estimators
 
 
 def test_dirichlet_entropy_matches_closed_form():
@@ -48,7 +47,6 @@ def test_order_stat_moments_are_ordered():
         assert sd >= 0
 
 
-@requires_entropy_estimators
 def test_estimate_alpha_entropy_point_estimate_is_deterministic():
     # A clearly skewed distribution for which the root finder converges.
     counts = [100, 50, 25, 12, 6, 3, 2, 1]

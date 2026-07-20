@@ -22,9 +22,11 @@ del Prado Martín) with utilities aimed at phonological / lexical analysis:
   released) the private Hugging Face dataset used in the paper.
 
 The heavy entropy-estimation numerics (MLE, James-Stein, Chao-Shen,
-Chao-Wang-Jost, NSB, ...) live in the upstream ``entropy_estimators`` package and
-are re-used here through its public :func:`entropy_estimators.Entropy` entry
-point, so results in this library inherit exactly those estimators.
+Chao-Wang-Jost, NSB, ...) are provided by :mod:`phoneme_entropy.estimators`,
+which is vendored verbatim from
+`entropy-estimators <https://github.com/fermosc24/entropy-estimators>`_
+(MIT, (c) 2025 fermosc24) so this package is a standalone distribution with no
+external VCS dependency. See ``THIRD_PARTY_LICENSES`` for attribution.
 
 Reproducibility notes
 ---------------------
@@ -49,6 +51,14 @@ from .dirichlet import (
     numerical_beta_order_stat_moments,
     plot_ranks,
 )
+from .estimators import (
+    Entropy,
+    FreqShrink,
+    JS_JensenShannon,
+    JS_KullbackLeibler,
+    dict_to_ndarray,
+    sample_frequencies,
+)
 from .maxent import compute_maxent_from_matrix
 from .segmentation import phoneme_prefix_entropy, segment_informativity
 
@@ -58,6 +68,13 @@ except _metadata.PackageNotFoundError:  # Running from a source checkout.
     __version__ = "0.0.0.dev0"
 
 __all__ = [
+    # estimators (vendored from entropy-estimators)
+    "Entropy",
+    "FreqShrink",
+    "JS_KullbackLeibler",
+    "JS_JensenShannon",
+    "dict_to_ndarray",
+    "sample_frequencies",
     # dirichlet
     "estimate_alpha_entropy",
     "dirichlet_entropy",

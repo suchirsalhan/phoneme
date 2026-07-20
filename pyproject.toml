@@ -29,17 +29,14 @@ classifiers = [
     "Topic :: Scientific/Engineering",
 ]
 
-# Runtime dependencies. NOTE: the base entropy estimators live in
-# `entropy-estimators` (F. Moscoso del Prado Martín), which is currently only
-# distributed via GitHub, so we pin it as a direct VCS reference. If/when it is
-# published to PyPI, replace the line below with a normal version spec, e.g.
-#   "entropy-estimators>=0.1",
+# Runtime dependencies. The entropy estimators are vendored into
+# `phoneme_entropy.estimators` (see THIRD_PARTY_LICENSES), so there is no VCS
+# dependency and this package installs cleanly from PyPI.
 dependencies = [
     "numpy>=1.21",
     "scipy>=1.7",
     "pandas>=1.3",
     "mpmath>=1.2",
-    "entropy-estimators @ git+https://github.com/fermosc24/entropy-estimators.git",
 ]
 
 [project.optional-dependencies]
@@ -67,10 +64,6 @@ packages = ["src/phoneme_entropy"]
 [tool.hatch.build.targets.wheel.force-include]
 # Ship the bundled CELEX sample CSV inside the wheel.
 "src/phoneme_entropy/data/celex_en_sample.csv" = "phoneme_entropy/data/celex_en_sample.csv"
-
-[tool.hatch.metadata]
-# Required so hatchling accepts the direct git reference for entropy-estimators.
-allow-direct-references = true
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

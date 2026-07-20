@@ -26,8 +26,9 @@ from math import log
 
 import pandas as pd
 
-# Upstream base library (was ``from entropies import *`` behind a sys.path hack).
-from entropy_estimators import Entropy
+# Entropy estimator, vendored into this package from entropy-estimators
+# (was ``from entropies import *`` behind a sys.path hack).
+from .estimators import Entropy
 
 __all__ = ["phoneme_prefix_entropy", "segment_informativity"]
 

@@ -1,23 +1,10 @@
-"""Shared pytest fixtures and import guards.
+"""Shared pytest fixtures.
 
-The segmentation and dirichlet modules depend on the upstream `entropy_estimators`
-package. If it is not installed, the tests that need it are skipped with a clear
-message rather than erroring at collection time.
+The entropy estimators are vendored into ``phoneme_entropy.estimators``, so no
+optional-dependency guards are needed — everything is importable directly.
 """
 
-import importlib.util
-
 import pytest
-
-HAS_ENTROPY_ESTIMATORS = importlib.util.find_spec("entropy_estimators") is not None
-
-requires_entropy_estimators = pytest.mark.skipif(
-    not HAS_ENTROPY_ESTIMATORS,
-    reason=(
-        "entropy-estimators is not installed; "
-        "install with pip install 'git+https://github.com/fermosc24/entropy-estimators.git'"
-    ),
-)
 
 
 @pytest.fixture

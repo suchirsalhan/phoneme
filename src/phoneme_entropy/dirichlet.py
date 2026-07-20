@@ -31,10 +31,10 @@ import numpy as np
 import scipy as sp
 from scipy.integrate import quad
 
-# Upstream base library. Previously imported via a hard-coded
-# ``sys.path.append('/Users/fermin/CODE/PYTHON3/'); from entropies import *``;
-# it is now a declared dependency and imported by its public name.
-from entropy_estimators import Entropy
+# Entropy estimator, vendored into this package from entropy-estimators.
+# (Originally imported via ``sys.path.append('/Users/fermin/...'); from entropies
+# import *``.)
+from .estimators import Entropy
 
 # ``matplotlib`` is only needed for :func:`plot_ranks`. Import lazily inside the
 # function so that headless installs (e.g. CI, servers) can use the rest of the
