@@ -61,7 +61,11 @@ from .estimators import (
     sample_frequencies,
 )
 from .maxent import compute_maxent_from_matrix
-from .segmentation import phoneme_prefix_entropy, segment_informativity
+from .segmentation import (
+    lexical_information_gain,
+    phoneme_prefix_entropy,
+    segment_informativity,
+)
 
 try:  # Populated from package metadata when installed (editable or wheel).
     __version__ = _metadata.version("phoneme-entropy")
@@ -84,6 +88,7 @@ __all__ = [
     "plot_ranks",
     # segmentation
     "phoneme_prefix_entropy",
+    "lexical_information_gain",
     "segment_informativity",
     # maxent
     "compute_maxent_from_matrix",

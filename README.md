@@ -96,7 +96,7 @@ ds = load_hf_dataset(split="train")   # after your access request is approved
 | --- | --- |
 | `Entropy`, `FreqShrink`, `JS_KullbackLeibler`, `JS_JensenShannon` | Entropy / divergence estimators (MLE, JSE, Chao-Shen, CWJ, NBRS, NSB). |
 | `estimate_alpha_entropy`, `dirichlet_entropy`, `plot_ranks` | Symmetric-Dirichlet inference and rank/probability curves. |
-| `segment_informativity`, `phoneme_prefix_entropy` | Next-phoneme surprisal and lexical information gain over phoneme strings. |
+| `segment_informativity`, `lexical_information_gain` | Next-phoneme surprisal and lexical information gain over phoneme strings (`phoneme_prefix_entropy` is a backwards-compatible alias). |
 | `compute_maxent_from_matrix` | Maximum-entropy fit to feature expectations. |
 | `phoneme_entropy.data.load_sample`, `load_hf_dataset` | Data loaders. |
 

@@ -60,3 +60,20 @@ def test_phoneme_prefix_entropy_columns(toy_words):
     assert list(df.columns) == ["Phoneme", "Entropy", "Weight", "Prefixes"]
     assert len(df) > 0
     assert (df["Prefixes"] >= 1).all()
+
+
+def test_lexical_information_gain_is_alias(toy_words):
+    # The terminology-aligned name is the same callable as phoneme_prefix_entropy.
+    from phoneme_entropy import lexical_information_gain
+    from phoneme_entropy.segmentation import (
+        lexical_information_gain as lig_mod,
+        phoneme_prefix_entropy as ppe_mod,
+    )
+
+    assert lexical_information_gain is ppe_mod
+    assert lig_mod is ppe_mod
+
+    words, freqs = toy_words
+    a = lexical_information_gain(words, freqs, smoothing="ML")
+    b = phoneme_prefix_entropy(words, freqs, smoothing="ML")
+    assert a.equals(b)

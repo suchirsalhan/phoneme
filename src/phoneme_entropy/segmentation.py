@@ -31,7 +31,11 @@ import pandas as pd
 # (was ``from entropies import *`` behind a sys.path hack).
 from .estimators import Entropy
 
-__all__ = ["phoneme_prefix_entropy", "segment_informativity"]
+__all__ = [
+    "phoneme_prefix_entropy",
+    "lexical_information_gain",
+    "segment_informativity",
+]
 
 
 def phoneme_prefix_entropy(
@@ -277,3 +281,11 @@ def segment_informativity(
         )
 
     return pd.DataFrame(rows)
+
+
+# Preferred, terminology-aligned name for :func:`phoneme_prefix_entropy`. The
+# quantity it computes — the mean entropy of the words still compatible after
+# each phoneme — is the "lexical information gain". This alias lets callers use
+# the current terminology; ``phoneme_prefix_entropy`` is retained unchanged for
+# backwards compatibility with published releases.
+lexical_information_gain = phoneme_prefix_entropy
