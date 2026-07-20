@@ -2,6 +2,8 @@ cff-version: 1.2.0
 message: "If you use this software, please cite it as below, along with the upstream entropy-estimators project."
 title: "phoneme-entropy: phoneme-level entropy, informativity, and maximum-entropy tools"
 authors:
+  - family-names: "Moscoso del Prado Martín"
+    given-names: Fermín
   - family-names: Salhan
     given-names: Suchir
 type: software

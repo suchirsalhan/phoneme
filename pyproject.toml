@@ -10,6 +10,7 @@ readme = "README.md"
 requires-python = ">=3.9"
 license = { text = "MIT" }
 authors = [
+    { name = "Fermín Moscoso del Prado Martín" },
     { name = "Suchir Salhan", email = "suchirsalhan@gmail.com" },
 ]
 keywords = [
