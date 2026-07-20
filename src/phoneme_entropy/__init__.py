@@ -10,8 +10,9 @@ del Prado Martín) with utilities aimed at phonological / lexical analysis:
   used to draw predicted rank/probability curves.
 
 * **Segmental informativity** (:mod:`phoneme_entropy.segmentation`)
-  Frequency-weighted phoneme prefix entropy and next-phoneme surprisal, computed
-  over words encoded as space-separated phoneme strings.
+  Frequency-weighted lexical information gain (via :func:`phoneme_prefix_entropy`)
+  and next-phoneme surprisal, computed over words encoded as space-separated
+  phoneme strings.
 
 * **Maximum-entropy fitting** (:mod:`phoneme_entropy.maxent`)
   Fit a maximum-entropy distribution to a set of target feature expectations via

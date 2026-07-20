@@ -24,7 +24,7 @@
 ## ✨ What you get
 
 - 📊 **Entropy & divergence estimators** — MLE, James–Stein, Chao–Shen, Chao–Wang–Jost, NBRS, and NSB, bundled and ready to call.
-- 🔡 **Segmental informativity** — per-phoneme next-phoneme surprisal and prefix entropy over words encoded as phoneme strings.
+- 🔡 **Segmental informativity & lexical information gain** — per-phoneme next-phoneme surprisal, plus the lexical information gain (mean entropy of the words still compatible) at each phoneme, over words encoded as phoneme strings.
 - 🎲 **Symmetric-Dirichlet inference** — recover a concentration parameter `α` from an entropy estimate, with predicted rank/probability curves.
 - 🧮 **Maximum-entropy fitting** — fit a distribution to target feature expectations via the convex dual.
 - 📦 **Batteries included** — ships a CELEX sample so every example runs out of the box; reproducible, tested, and `pip`-installable.
@@ -58,9 +58,9 @@ from phoneme_entropy.data import load_sample
 
 sample = load_sample()                       # bundled CELEX sample (Word = space-separated phonemes)
 
-# Per-phoneme next-phoneme surprisal and prefix entropy
-surprisal = segment_informativity(sample["Word"])
-prefix_H  = phoneme_prefix_entropy(sample["Word"])
+# Per-phoneme next-phoneme surprisal and lexical information gain
+surprisal          = segment_informativity(sample["Word"])
+lexical_info_gain  = phoneme_prefix_entropy(sample["Word"])
 
 # Symmetric-Dirichlet concentration implied by an entropy estimate
 phon = defaultdict(int)
@@ -96,7 +96,7 @@ ds = load_hf_dataset(split="train")   # after your access request is approved
 | --- | --- |
 | `Entropy`, `FreqShrink`, `JS_KullbackLeibler`, `JS_JensenShannon` | Entropy / divergence estimators (MLE, JSE, Chao-Shen, CWJ, NBRS, NSB). |
 | `estimate_alpha_entropy`, `dirichlet_entropy`, `plot_ranks` | Symmetric-Dirichlet inference and rank/probability curves. |
-| `segment_informativity`, `phoneme_prefix_entropy` | Segmental informativity over phoneme strings. |
+| `segment_informativity`, `phoneme_prefix_entropy` | Next-phoneme surprisal and lexical information gain over phoneme strings. |
 | `compute_maxent_from_matrix` | Maximum-entropy fit to feature expectations. |
 | `phoneme_entropy.data.load_sample`, `load_hf_dataset` | Data loaders. |
 

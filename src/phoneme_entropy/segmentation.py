@@ -1,14 +1,15 @@
-"""Segmental informativity: phoneme prefix entropy and next-phoneme surprisal.
+"""Segmental informativity: lexical information gain and next-phoneme surprisal.
 
 This module ports ``original/phoneme_info.py``. Both public functions operate on
 words encoded as **space-separated phoneme strings** (e.g. ``"k a t"``) and
 return tidy :class:`pandas.DataFrame` summaries keyed by phoneme.
 
-* :func:`phoneme_prefix_entropy` measures, for each phoneme, the mean entropy of
-  the set of words still compatible with the prefix that *ends* in that phoneme —
-  i.e. how much lexical uncertainty remains at that point. It uses
+* :func:`phoneme_prefix_entropy` measures the **lexical information gain** at each
+  phoneme: the mean entropy of the set of words still compatible with the prefix
+  that *ends* in that phoneme — i.e. how much lexical uncertainty remains (and is
+  progressively resolved) at that point. It uses
   :func:`entropy_estimators.Entropy` so the entropy estimator (ML, CWJ, NSB, ...)
-  is configurable.
+  is configurable. (The function keeps its historical name for API stability.)
 
 * :func:`segment_informativity` measures, for each phoneme, the frequency-weighted
   mean *surprisal* of the phoneme that follows it, under additive (Laplace/Lidstone)
@@ -39,7 +40,8 @@ def phoneme_prefix_entropy(
     weighted=True,
     smoothing="CWJ",
 ):
-    """Mean entropy of the words still compatible after each phoneme.
+    """Lexical information gain: mean entropy of the words still compatible
+    after each phoneme.
 
     For every prefix of every word, we collect the (frequency-weighted) set of
     words sharing that prefix and estimate its entropy with

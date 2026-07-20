@@ -44,12 +44,12 @@ def main() -> None:
     alpha, se = estimate_alpha_entropy(phonfreqs["Frequency"], n_boot=0)
     print(f"Estimated Dirichlet alpha: {alpha:.4f}")
 
-    # 4. Per-phoneme surprisal (next-phoneme informativity) and prefix entropy.
+    # 4. Per-phoneme next-phoneme surprisal and lexical information gain.
     surprisal = segment_informativity(sample["Word"])
-    prefix_entropy = phoneme_prefix_entropy(sample["Word"])
+    lexical_info_gain = phoneme_prefix_entropy(sample["Word"])
 
     # 5. Merge, form frequency-weighted target expectations, fit max-ent.
-    merged = phonfreqs.merge(surprisal, on="Phoneme").merge(prefix_entropy, on="Phoneme")
+    merged = phonfreqs.merge(surprisal, on="Phoneme").merge(lexical_info_gain, on="Phoneme")
     p = merged["Frequency"] / merged["Frequency"].sum()
     targets = np.array(
         [np.sum(p * merged["Surprisal"]), np.sum(p * merged["Entropy"])]
