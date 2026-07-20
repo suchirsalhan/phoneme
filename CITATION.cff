@@ -1,0 +1,19 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below, along with the upstream entropy-estimators project."
+title: "phoneme-entropy: phoneme-level entropy, informativity, and maximum-entropy tools"
+authors:
+  - family-names: Salhan
+    given-names: Suchir
+type: software
+license: MIT
+repository-code: "https://github.com/suchirsalhan/phoneme"
+version: "0.1.0"
+references:
+  - type: software
+    title: "entropy-estimators"
+    authors:
+      - family-names: "Moscoso del Prado Martín"
+        given-names: "Fermín"
+    repository-code: "https://github.com/fermosc24/entropy-estimators"
+    license: MIT
+    year: 2025

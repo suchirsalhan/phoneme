@@ -1,0 +1,129 @@
+"""Dataset loaders for the bundled sample and the private Hugging Face dataset.
+
+Two data sources are supported:
+
+1. **Bundled CELEX sample** — ``celex_en_sample.csv`` ships inside the package
+   for quick smoke tests, examples, and the tutorial notebook. Load it with
+   :func:`load_sample`.
+
+2. **Private Hugging Face dataset** — the full dataset used in the paper lives in
+   a private HF repo (id set via :data:`HF_DATASET_ID` or the
+   ``PHONEME_ENTROPY_HF_DATASET`` environment variable). Load it with
+   :func:`load_hf_dataset`, which requires the optional ``datasets`` dependency
+   and a valid HF token for private access.
+
+The CSV is expected to contain at least a ``Word`` column (space-separated
+phonemes) and a ``Frequency`` column, matching the API of
+:mod:`phoneme_entropy.segmentation`.
+"""
+
+from __future__ import annotations
+
+import os
+from importlib import resources
+
+import pandas as pd
+
+__all__ = ["load_sample", "load_hf_dataset", "HF_DATASET_ID", "sample_path"]
+
+# ---------------------------------------------------------------------------
+# TODO(dataset): replace with the real private HF dataset id once it is shared,
+# e.g. "suchirsalhan/phoneme-entropy". It can also be overridden at runtime via
+# the PHONEME_ENTROPY_HF_DATASET environment variable (see load_hf_dataset).
+# ---------------------------------------------------------------------------
+HF_DATASET_ID = os.environ.get(
+    "PHONEME_ENTROPY_HF_DATASET", "REPLACE_ME/phoneme-entropy"
+)
+
+_SAMPLE_FILENAME = "celex_en_sample.csv"
+
+
+def sample_path() -> str:
+    """Return the absolute path to the bundled CELEX sample CSV.
+
+    Uses :mod:`importlib.resources` so it works whether the package is installed
+    as a wheel, in editable mode, or run from a source checkout.
+    """
+    return str(resources.files("phoneme_entropy").joinpath("data", _SAMPLE_FILENAME))
+
+
+def load_sample(sep: str = ",") -> pd.DataFrame:
+    """Load the bundled CELEX English sample as a :class:`pandas.DataFrame`.
+
+    Parameters
+    ----------
+    sep : str, default ","
+        Field separator forwarded to :func:`pandas.read_csv`.
+
+    Returns
+    -------
+    pandas.DataFrame
+        The sample lexicon. The first (unnamed index) column present in the raw
+        file is dropped, mirroring the original tutorial's
+        ``pd.read_csv(...).iloc[:, 1:]``.
+    """
+    with resources.as_file(
+        resources.files("phoneme_entropy").joinpath("data", _SAMPLE_FILENAME)
+    ) as path:
+        df = pd.read_csv(path, sep=sep)
+    # The raw CSV carries a leading unnamed index column; drop it for parity with
+    # the original notebook.
+    if df.columns[0].startswith("Unnamed"):
+        df = df.iloc[:, 1:]
+    return df
+
+
+def load_hf_dataset(
+    dataset_id: str | None = None,
+    split: str | None = None,
+    token: str | bool | None = None,
+    **kwargs,
+):
+    """Load the private Hugging Face dataset used in the paper.
+
+    Requires the optional ``datasets`` dependency (``pip install
+    "phoneme-entropy[data]"``) and, for a private repo, a Hugging Face access
+    token — pass ``token=...`` or run ``huggingface-cli login`` beforehand.
+
+    Parameters
+    ----------
+    dataset_id : str, optional
+        HF dataset repo id. Defaults to :data:`HF_DATASET_ID` (which itself
+        honours the ``PHONEME_ENTROPY_HF_DATASET`` environment variable).
+    split : str, optional
+        Which split to load (e.g. ``"train"``). If ``None``, the full
+        ``DatasetDict`` is returned.
+    token : str | bool, optional
+        HF access token for private datasets. If ``None``, the token cached by
+        ``huggingface-cli login`` is used.
+    **kwargs
+        Additional keyword arguments forwarded to
+        :func:`datasets.load_dataset`.
+
+    Returns
+    -------
+    datasets.Dataset or datasets.DatasetDict
+        The loaded dataset.
+
+    Raises
+    ------
+    ImportError
+        If the ``datasets`` package is not installed.
+    """
+    try:
+        from datasets import load_dataset
+    except ImportError as exc:  # pragma: no cover - exercised only without extra
+        raise ImportError(
+            "load_hf_dataset requires the 'datasets' package. Install the optional "
+            "data extra with:  pip install 'phoneme-entropy[data]'"
+        ) from exc
+
+    dataset_id = dataset_id or HF_DATASET_ID
+    if dataset_id.startswith("REPLACE_ME"):
+        raise ValueError(
+            "The Hugging Face dataset id has not been configured yet. Set "
+            "phoneme_entropy.data.HF_DATASET_ID, pass dataset_id=..., or export "
+            "PHONEME_ENTROPY_HF_DATASET once the private dataset is released."
+        )
+
+    return load_dataset(dataset_id, split=split, token=token, **kwargs)

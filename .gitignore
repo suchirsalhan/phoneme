@@ -1,0 +1,45 @@
+# --- Local, developer-only instructions (never commit) ---
+LOCAL_INSTRUCTIONS.md
+
+# --- Python ---
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.eggs/
+build/
+dist/
+wheels/
+*.egg
+.installed.cfg
+
+# --- Virtual environments ---
+.venv/
+venv/
+env/
+ENV/
+.python-version
+
+# --- Testing / coverage ---
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+.ruff_cache/
+.mypy_cache/
+
+# --- Jupyter ---
+.ipynb_checkpoints/
+
+# --- Hugging Face / data caches (do not commit private data) ---
+.cache/
+*.arrow
+hf_cache/
+data_cache/
+
+# --- OS / editor ---
+.DS_Store
+.idea/
+.vscode/
+*.swp
